@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajax</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.25.0/axios.min.js"> </script>
+</head>
+<body>
+    <h1>Welcome {{name}}</h1>
+
+    <h3>All Articles</h3>
+
+
+    <form id="form">
+        <p>
+            <label for="title"></label>
+            <input type="text" id="title">
+        </p>
+        <p>
+            <label for="Description"></label>
+            <textarea type="tex" id="Description"></textarea>
+        </p>
+        <p>
+            <button type="submit" id="create-btn">Submit data</button>
+        </p>
+    </form>
+    <button id="load-article">Load Article</button>
+    <ul id="aritcles"></ul>
+
+
+
+    
+<script>
+        let loadBtn = document.getElementById('load-article');
+        let articleContainer = document.getElementById('aritcles');
+        loadBtn.addEventListener('click',()=>{
+            axios.get("/allarticles/").then((resp)=>{
+                articleContainer.innerHTML = resp.data
+            }).catch((err)=>{
+                console.log(err)
+            })
+        })
+
+        var form =document.getElementById('form')
+        form.addEventListener('submit',(e)=>{
+            e.preventDefault()
+            // alert('summit')
+            var fd = new FormData()
+            fd.append('title', document.getElementById('title').value);
+            fd.append('desc', document.getElementById('Description').value);
+            fd.append('csrfmiddlewaretoken', '{{csrf_token}}');
+            axios.post('/createarticle/',fd).then((resp)=>{
+                if (resp.data.status == 'success') {
+                    loadBtn.click()
+                }
+            }).catch((e)=>{
+                console.log(e)
+            })
+
+        })
+
+    </script>
+</body>
+</html>

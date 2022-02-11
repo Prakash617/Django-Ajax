@@ -1,0 +1,5 @@
+{% for article in allarticles %}
+<li>{{article.title}}</li>
+<li>{{article.desc}}</li>
+<p>Published at: {{article.create_at}}</p>
+{%endfor%}
